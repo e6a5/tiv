@@ -5,7 +5,7 @@
 #
 
 echo "=== TIV Demo - Terminal Image Viewer ==="
-echo "Converting images to ASCII art with Unix philosophy"
+echo "Professional ASCII art with Unicode blocks & Floyd-Steinberg dithering"
 echo
 
 # Create a simple test gradient if no image provided
@@ -22,7 +22,7 @@ echo
 
 if [ -f "test.png" ]; then
     echo "   Gradient demonstration:"
-    ./build/tiv -w 40 test.png | head -6
+    ./tiv -w 40 test.png | head -6
     echo
 fi
 
@@ -38,10 +38,10 @@ echo
 echo "4. Contrast control for better visibility:"
 if [ -f "test.png" ]; then
     echo "   Normal contrast (1.0):"
-    ./build/tiv -w 30 test.png | head -4
+    ./tiv -w 30 test.png | head -4
     echo
     echo "   Enhanced contrast (1.8):"
-    ./build/tiv -c 1.8 -w 30 test.png | head -4
+    ./tiv -c 1.8 -w 30 test.png | head -4
     echo
 fi
 
@@ -53,17 +53,34 @@ echo "   • tiv image.jpg | head -10"
 echo "   • find . -name '*.jpg' | head -1 | xargs tiv"
 echo
 
-echo "=== TIV Features ==="
+echo "=== 🚀 TIV Features - Market Leading Quality ==="
+echo "✓ ANSI Color Support (256-color & 24-bit truecolor)"
+echo "✓ Unicode block characters (2x resolution vs ASCII)"
+echo "✓ Floyd-Steinberg dithering (professional gradients)"
 echo "✓ 13-character ASCII density range"
 echo "✓ Box filter sampling for quality"  
-echo "✓ Proper aspect ratio handling"
 echo "✓ Contrast adjustment (-c flag)"
-echo "✓ Unix philosophy compliant"
+echo "✓ Unix philosophy compliant (pipeable & composable)"
 echo "✓ Cross-platform (Linux, macOS, Windows)"
 echo
-echo "Try real images:"
-echo "  curl -s 'https://picsum.photos/300' | ./build/tiv -c 1.4 -w 60"
-echo "  ./build/tiv -w 80 -c 1.2 your-photo.jpg | less"
+echo "🎯 Quality modes:"
+echo "  Standard:       ./tiv image.jpg"
+echo "  High-res:       ./tiv -b image.jpg"
+echo "  Smooth:         ./tiv -d image.jpg" 
+echo "  Color 256:      ./tiv -color 256 image.jpg"
+echo "  Color 24-bit:   ./tiv -color 24bit image.jpg"
+echo "  🌟 Ultimate:    ./tiv -b -d -color 24bit -c 1.3 image.jpg"
+echo
+echo "🌈 Color modes:"
+echo "  B&W ASCII:      ./tiv image.jpg"
+echo "  256-color:      ./tiv -color 256 image.jpg"
+echo "  24-bit color:   ./tiv -color 24bit image.jpg"
+echo "  Color + blocks: ./tiv -b -color 24bit image.jpg"
+echo "  Full quality:   ./tiv -b -d -color 24bit -c 1.3 image.jpg"
+echo
+echo "🔗 Unix pipes:"
+echo "  curl -s 'https://picsum.photos/300' | ./tiv -b -d -color 24bit -w 60"
+echo "  ./tiv -b -d -color 24bit your-photo.jpg | less"
 
 # Clean up test file if we created it
 if [ -f "test.png" ] && command -v convert &> /dev/null; then

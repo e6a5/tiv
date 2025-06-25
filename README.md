@@ -4,7 +4,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/e6a5/tiv)](https://goreportcard.com/report/github.com/e6a5/tiv)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A fast, simple Unix filter that converts images to ASCII art. Perfect for viewing images in terminals, creating ASCII art, or integrating into shell workflows.
+A fast, simple Unix filter that converts images to ASCII art with **professional quality**. Features ANSI color support, Unicode blocks for 2x resolution, and Floyd-Steinberg dithering for smooth gradients. Perfect for viewing images in terminals, creating ASCII art, or integrating into shell workflows.
 
 ## 🐧 Philosophy
 
@@ -72,6 +72,19 @@ tiv -i image.jpg
 # Increase contrast for better detail
 tiv -c 1.5 image.jpg
 
+# 🌟 High resolution Unicode blocks
+tiv -b image.jpg
+
+# 🎨 Professional dithering for smooth gradients
+tiv -d image.jpg
+
+# 🌈 ANSI Color Support
+tiv -color 256 image.jpg     # 256-color mode
+tiv -color 24bit image.jpg   # 24-bit truecolor
+
+# 🚀 Ultimate quality: blocks + dithering + color + contrast
+tiv -b -d -color 24bit -c 1.3 image.jpg
+
 # Pipeline example
 tiv image.jpg | head -20 | tail -10
 ```
@@ -82,6 +95,9 @@ tiv image.jpg | head -20 | tail -10
 - `-h, --height`: Output height in characters (auto-calculated if not set)
 - `-i, --invert`: Invert brightness levels
 - `-c, --contrast`: Contrast adjustment (0.5-2.0, default: 1.0)
+- `-b, --blocks`: 🌟 Use Unicode block characters for **2x higher resolution**
+- `-d, --dither`: 🎨 Apply Floyd-Steinberg dithering for **professional quality**
+- `--color`: 🌈 **ANSI color output** ('256' for 256-color, '24bit' for truecolor)
 - `--help`: Show usage information
 
 ## Supported Formats
@@ -104,6 +120,11 @@ find . -name "*.jpg" | head -1 | xargs cat | tiv -w 60
 Quick preview:
 ```bash
 tiv image.png | head -20
+```
+
+Full color with high resolution:
+```bash
+tiv -b -d -color 24bit -c 1.3 photo.jpg
 ```
 
 ## 🤝 Contributing
