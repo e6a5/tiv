@@ -4,13 +4,13 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/e6a5/tiv)](https://goreportcard.com/report/github.com/e6a5/tiv)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A fast, simple Unix filter that converts images to ASCII art with **professional quality**. Features ANSI color support, Unicode blocks for 2x resolution, and Floyd-Steinberg dithering for smooth gradients. Perfect for viewing images in terminals, creating ASCII art, or integrating into shell workflows.
+A fast, powerful terminal image viewer that displays images **side-by-side** with ASCII art. Features ANSI color support, Unicode blocks for 2x resolution, Floyd-Steinberg dithering, and inline image display. Perfect for viewing images in terminals with both original and ASCII representations simultaneously.
 
 ## 🐧 Philosophy
 
-**Do one thing and do it well:** Convert images to ASCII text.
+**Do one thing and do it well:** Display images in terminals with maximum clarity.
 
-TIV follows Unix philosophy - it reads image files or stdin, converts pixels to ASCII characters based on brightness, and outputs plain text to stdout. Designed to work seamlessly with other Unix tools through pipes and redirection.
+TIV follows Unix philosophy while providing modern terminal image viewing. By default, it displays images side-by-side with ASCII conversions for the best of both worlds. For traditional workflows, use `-no-split` to output pure ASCII text compatible with pipes and redirection.
 
 ## 📦 Installation
 
@@ -51,17 +51,17 @@ make install  # Optional: install system-wide
 ## Usage
 
 ```bash
-# Basic usage
+# Split view (default): image + ASCII side-by-side
 tiv image.jpg
 
-# Specify width
-tiv -w 40 image.png
+# Classic ASCII only
+tiv -no-split image.jpg
 
-# Read from stdin
+# Pipe mode (automatically ASCII-only)  
 cat image.jpg | tiv
 
-# Save to file
-tiv image.jpg > ascii.txt
+# Save ASCII to file
+tiv -no-split image.jpg > ascii.txt
 
 # Preview with pager
 tiv image.jpg | less
@@ -85,6 +85,11 @@ tiv -color 24bit image.jpg   # 24-bit truecolor
 # 🚀 Ultimate quality: blocks + dithering + color + contrast
 tiv -b -d -color 24bit -c 1.3 image.jpg
 
+# 🖼️  Show actual image in terminal (instead of ASCII)
+tiv -p image.jpg                             # Auto-detect best preview method
+tiv -p -preview-mode terminal image.jpg      # Force terminal inline preview
+tiv -p -preview-mode system image.jpg        # Force system viewer
+
 # Pipeline example
 tiv image.jpg | head -20 | tail -10
 ```
@@ -98,12 +103,59 @@ tiv image.jpg | head -20 | tail -10
 - `-b, --blocks`: 🌟 Use Unicode block characters for **2x higher resolution**
 - `-d, --dither`: 🎨 Apply Floyd-Steinberg dithering for **professional quality**
 - `--color`: 🌈 **ANSI color output** ('256' for 256-color, '24bit' for truecolor)
+- `-p, --preview`: 👁️ **Show original image preview** (auto-detects best method)
+- `--preview-mode`: Preview mode: 'auto', 'terminal', or 'system'
+- `--no-split`: Disable split view (classic ASCII-only mode)
 - `--help`: Show usage information
 
 ## Supported Formats
 
 - PNG
 - JPEG
+
+## 🖼️ Terminal Image Preview
+
+TIV can display the **actual image** directly in your terminal instead of ASCII art using modern terminal protocols:
+
+### Auto Mode (Default)
+```bash
+tiv -p image.jpg
+```
+Automatically detects terminal capabilities and chooses the best preview method.
+
+### Terminal Inline Preview
+```bash
+tiv -p -preview-mode terminal image.jpg
+```
+Shows the original image directly in compatible terminals using:
+- **Kitty Graphics Protocol**: Kitty, Ghostty, Konsole
+- **iTerm2 Inline Images**: iTerm2, WezTerm, Warp, VS Code, Tabby, Hyper, Bobcat  
+- **Sixel Graphics**: foot, Windows Terminal, Black Box, xterm
+
+### System Viewer
+```bash
+tiv -p -preview-mode system image.jpg
+```
+Opens the image in your system's default image viewer (Preview.app on macOS, etc.)
+
+### Supported Terminals
+
+Based on the [Yazi terminal compatibility research](https://yazi-rs.github.io/docs/image-preview), TIV supports:
+
+| Terminal | Protocol | Status |
+|----------|----------|--------|
+| Kitty | Kitty Graphics | ✅ Full support |
+| iTerm2 | Inline Images | ✅ Full support |
+| WezTerm | Inline Images | ✅ Full support |
+| Ghostty | Kitty Graphics | ✅ Full support |
+| Windows Terminal | Sixel | ✅ Full support |
+| VS Code | Inline Images | ⚠️ Limited support |
+| foot | Sixel | ✅ Full support |
+| Konsole | Kitty Graphics | ✅ Full support |
+| Warp | Inline Images | ✅ Full support |
+| Tabby | Inline Images | ✅ Full support |
+| Hyper | Inline Images | ✅ Full support |
+| Black Box | Sixel | ✅ Full support |
 
 ## Examples
 

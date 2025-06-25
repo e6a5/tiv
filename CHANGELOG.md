@@ -23,6 +23,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Proper aspect ratio handling
 - Cross-platform support (Linux, macOS, Windows)
 - Version flag (--version)
+- **📱 Split View (Default)**: Side-by-side display with original image on left, ASCII on right
+  - Automatic terminal detection and best preview method selection
+  - Graceful fallback to placeholder when inline images not supported
+  - Screen-aware layout with proper positioning and sizing
+- **🖼️ Terminal Inline Image Display**: Show actual images in terminal instead of ASCII
+  - Kitty Graphics Protocol support (Kitty, Ghostty, Konsole)
+  - iTerm2 Inline Images support (iTerm2, WezTerm, Warp, VS Code, Tabby, Hyper, Bobcat)
+  - Sixel Graphics support (foot, Windows Terminal, Black Box, xterm)
+- **🔄 Smart Preview Auto-Detection**: Automatically chooses best preview method
+- **⚙️ Preview Mode Control**: `--preview-mode` flag with 'auto', 'terminal', 'system' options
+- **📱 Multi-Protocol Support**: Based on Yazi terminal compatibility research
+- **🎛️ Classic Mode**: `--no-split` flag for traditional ASCII-only output
+- Cross-platform system viewer fallback (macOS `open`, Linux `xdg-open`/`eog`/`feh`, Windows `start`)
+- Pure image display mode (no ASCII conversion when using preview)
 
 ### Features
 - `-w, --width`: Set output width in characters
@@ -32,6 +46,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `-b, --blocks`: Use Unicode block characters for 2x higher resolution
 - `-d, --dither`: Apply Floyd-Steinberg dithering for professional quality
 - `--color`: Enable ANSI color output ('256' for 256-color, '24bit' for truecolor)
+- `-p, --preview`: Show original image preview (auto-detects best method)
+- `--preview-mode`: Control preview mode ('auto', 'terminal', 'system')
+- `--no-split`: Disable split view (classic ASCII-only mode)
 
 ### Unix Philosophy Compliance
 - Do one thing well: Convert images to ASCII

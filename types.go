@@ -22,11 +22,14 @@ const (
 
 // Config holds the CLI options
 type Config struct {
-	Width     int
-	Height    int
-	Invert    bool
-	Contrast  float64
-	UseBlocks bool
-	Dither    bool
-	Color     ColorMode
+	Width       int
+	Height      int
+	Invert      bool
+	Contrast    float64
+	UseBlocks   bool
+	Dither      bool
+	Color       ColorMode
+	Preview     bool
+	PreviewMode string
+	NoSplit     bool
 } 
