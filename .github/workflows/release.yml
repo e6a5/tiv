@@ -1,0 +1,113 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: 1.21
+    
+    - name: Get tag
+      id: tag
+      run: echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+    
+    - name: Build all platforms
+      run: |
+        mkdir -p build
+        
+        # Linux AMD64
+        GOOS=linux GOARCH=amd64 go build -ldflags "-s -w -X main.Version=${{ steps.tag.outputs.tag }}" -o build/tiv-linux-amd64 .
+        
+        # Linux ARM64
+        GOOS=linux GOARCH=arm64 go build -ldflags "-s -w -X main.Version=${{ steps.tag.outputs.tag }}" -o build/tiv-linux-arm64 .
+        
+        # macOS AMD64
+        GOOS=darwin GOARCH=amd64 go build -ldflags "-s -w -X main.Version=${{ steps.tag.outputs.tag }}" -o build/tiv-darwin-amd64 .
+        
+        # macOS ARM64 (Apple Silicon)
+        GOOS=darwin GOARCH=arm64 go build -ldflags "-s -w -X main.Version=${{ steps.tag.outputs.tag }}" -o build/tiv-darwin-arm64 .
+        
+        # Windows AMD64
+        GOOS=windows GOARCH=amd64 go build -ldflags "-s -w -X main.Version=${{ steps.tag.outputs.tag }}" -o build/tiv-windows-amd64.exe .
+    
+    - name: Create archives
+      run: |
+        cd build
+        
+        # Create tar.gz for Unix-like systems
+        tar -czf tiv-${{ steps.tag.outputs.tag }}-linux-amd64.tar.gz tiv-linux-amd64
+        tar -czf tiv-${{ steps.tag.outputs.tag }}-linux-arm64.tar.gz tiv-linux-arm64
+        tar -czf tiv-${{ steps.tag.outputs.tag }}-darwin-amd64.tar.gz tiv-darwin-amd64
+        tar -czf tiv-${{ steps.tag.outputs.tag }}-darwin-arm64.tar.gz tiv-darwin-arm64
+        
+        # Create zip for Windows
+        zip tiv-${{ steps.tag.outputs.tag }}-windows-amd64.zip tiv-windows-amd64.exe
+        
+        # Generate checksums
+        sha256sum *.tar.gz *.zip > checksums.txt
+    
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.tag.outputs.tag }}
+        name: TIV ${{ steps.tag.outputs.tag }}
+        body: |
+          ## TIV ${{ steps.tag.outputs.tag }}
+          
+          Terminal Image Viewer - Convert images to ASCII art
+          
+          ### Installation
+          
+          Download the appropriate binary for your platform:
+          
+          **Linux (x64):**
+          ```bash
+          wget https://github.com/e6a5/tiv/releases/download/${{ steps.tag.outputs.tag }}/tiv-${{ steps.tag.outputs.tag }}-linux-amd64.tar.gz
+          tar -xzf tiv-${{ steps.tag.outputs.tag }}-linux-amd64.tar.gz
+          sudo mv tiv-linux-amd64 /usr/local/bin/tiv
+          ```
+          
+          **macOS (Apple Silicon):**
+          ```bash
+          wget https://github.com/e6a5/tiv/releases/download/${{ steps.tag.outputs.tag }}/tiv-${{ steps.tag.outputs.tag }}-darwin-arm64.tar.gz
+          tar -xzf tiv-${{ steps.tag.outputs.tag }}-darwin-arm64.tar.gz
+          sudo mv tiv-darwin-arm64 /usr/local/bin/tiv
+          ```
+          
+          **macOS (Intel):**
+          ```bash
+          wget https://github.com/e6a5/tiv/releases/download/${{ steps.tag.outputs.tag }}/tiv-${{ steps.tag.outputs.tag }}-darwin-amd64.tar.gz
+          tar -xzf tiv-${{ steps.tag.outputs.tag }}-darwin-amd64.tar.gz
+          sudo mv tiv-darwin-amd64 /usr/local/bin/tiv
+          ```
+          
+          **Windows:**
+          Download and extract `tiv-${{ steps.tag.outputs.tag }}-windows-amd64.zip`
+          
+          ### Usage
+          ```bash
+          tiv image.jpg                    # Basic usage
+          tiv -w 60 -c 1.4 image.png      # Custom width and contrast
+          cat image.jpg | tiv              # From stdin
+          ```
+          
+          ### Unix Philosophy
+          TIV follows Unix principles: do one thing well, work with text streams, and compose with other tools.
+        files: |
+          build/*.tar.gz
+          build/*.zip
+          build/checksums.txt
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
