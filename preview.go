@@ -224,7 +224,8 @@ func getTerminalSize() (int, int) {
 		cmd := exec.Command("stty", "size")
 		cmd.Stdin = os.Stdin
 		if output, err := cmd.Output(); err == nil {
-			fmt.Sscanf(string(output), "%d %d", &height, &width)
+			// Ignore error from Sscanf as we have fallback values
+			_, _ = fmt.Sscanf(string(output), "%d %d", &height, &width)
 		}
 	}
 	

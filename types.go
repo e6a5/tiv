@@ -4,9 +4,8 @@ package main
 // Using more characters for better density representation
 const asciiChars = " .':;!>*+%S#@"
 
-// Unicode block characters for high resolution mode
-// These allow for much higher resolution by using top/bottom halves
-const blockChars = " ░▒▓█"
+// Note: blockChars was removed as it was unused.
+// The project uses halfBlocks for Unicode block rendering.
 
 // Unicode half-block characters for even higher resolution
 const halfBlocks = " ▁▂▃▄▅▆▇█"

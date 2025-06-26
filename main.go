@@ -71,8 +71,22 @@ func main() {
 	// Parse and validate inputs
 	reader, filename, err := parseInputSource()
 	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", friendlyError(err, "parsing input"))
+		os.Exit(1)
+	}
+	
+	// Validate configuration
+	if err := validateConfig(&config); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(1)
+	}
+	
+	// Validate image file if provided
+	if filename != "" {
+		if err := validateImageFile(filename); err != nil {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			os.Exit(1)
+		}
 	}
 	
 	// Validate preview flag usage
@@ -173,17 +187,19 @@ func handleASCIIMode(reader io.Reader, config Config) {
 func generateASCII(reader io.Reader, config Config) (string, error) {
 	img, _, err := image.Decode(reader)
 	if err != nil {
-		return "", fmt.Errorf("failed to decode image: %w", err)
+		return "", friendlyError(fmt.Errorf("failed to decode image: %w", err), "image decoding")
 	}
 	
-	// Choose conversion method based on config
-	var result string
-	if config.Dither {
-		result = imageToArtWithDithering(img, config)
-	} else if config.UseBlocks {
-		result = imageToBlocks(img, config)
-	} else {
-		result = imageToASCII(img, config)
+	// Validate image dimensions
+	if err := validateImageDimensions(img, "input image"); err != nil {
+		return "", err
+	}
+	
+	// Use memory-optimized processing for large images
+	processor := NewChunkedProcessor(config)
+	result, err := processor.processLargeImageOptimized(img)
+	if err != nil {
+		return "", friendlyError(err, "image processing")
 	}
 	
 	return result, nil

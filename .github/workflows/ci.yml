@@ -22,7 +22,7 @@ jobs:
         go-version: ${{ matrix.go-version }}
     
     - name: Cache Go modules
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -47,10 +47,10 @@ jobs:
         ./tiv --version || echo "Version flag not implemented yet"
     
     - name: Run linting
-      uses: golangci/golangci-lint-action@v3
+      uses: golangci/golangci-lint-action@v6
       with:
         version: latest
-        args: --timeout=5m
+        args: --out-format=colored-line-number --timeout=5m
 
   build-matrix:
     runs-on: ubuntu-latest
@@ -84,7 +84,7 @@ jobs:
         go build -ldflags "-s -w" -o "$BINARY_NAME" .
     
     - name: Upload artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: tiv-${{ matrix.goos }}-${{ matrix.goarch }}
         path: tiv-* 

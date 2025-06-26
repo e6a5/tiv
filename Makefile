@@ -15,10 +15,14 @@ GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 GOMOD=$(GOCMD) mod
 
+# Linting
+GOLANGCI_LINT_VERSION=v1.64.8
+GOLANGCI_LINT_CMD=golangci-lint
+
 # Build flags
 LDFLAGS=-ldflags "-s -w -X main.Version=$(VERSION)"
 
-.PHONY: all build clean test install uninstall deps tidy help
+.PHONY: all build clean test install uninstall deps tidy lint lint-install check help
 
 # Default target
 all: build
@@ -60,6 +64,25 @@ tidy:
 	@echo "Tidying go.mod..."
 	$(GOMOD) tidy
 
+# Install golangci-lint
+lint-install:
+	@echo "Installing golangci-lint $(GOLANGCI_LINT_VERSION)..."
+	@which $(GOLANGCI_LINT_CMD) > /dev/null 2>&1 || { \
+		echo "golangci-lint not found, installing..."; \
+		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $$(go env GOPATH)/bin $(GOLANGCI_LINT_VERSION); \
+	}
+	@echo "golangci-lint installed successfully"
+
+# Run linting (install golangci-lint if needed)
+lint: lint-install
+	@echo "Running golangci-lint..."
+	@$(GOLANGCI_LINT_CMD) run --out-format=colored-line-number --timeout=5m
+	@echo "Linting completed successfully!"
+
+# Pre-commit checks (lint + test)
+check: lint test
+	@echo "All pre-commit checks passed!"
+
 # Install binary to system
 install: build
 	@echo "Installing $(BINARY_NAME) to $(INSTALL_DIR)..."
@@ -94,6 +117,9 @@ help:
 	@echo "  build-all  - Build for multiple platforms"
 	@echo "  clean      - Clean build artifacts"
 	@echo "  test       - Run tests"
+	@echo "  lint       - Run golangci-lint (installs if needed)"
+	@echo "  lint-install - Install golangci-lint"
+	@echo "  check      - Run lint + test (recommended before commit)"
 	@echo "  deps       - Install dependencies"
 	@echo "  tidy       - Tidy go.mod"
 	@echo "  install    - Install to system (requires sudo)"
