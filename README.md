@@ -1,10 +1,50 @@
 # 🎨 TIV - Terminal Image Viewer
 
 [![CI](https://github.com/e6a5/tiv/workflows/CI/badge.svg)](https://github.com/e6a5/tiv/actions)
+[![Release](https://img.shields.io/github/v/release/e6a5/tiv)](https://github.com/e6a5/tiv/releases/latest)
 [![Go Report Card](https://goreportcard.com/badge/github.com/e6a5/tiv)](https://goreportcard.com/report/github.com/e6a5/tiv)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A fast, powerful terminal image viewer that displays images **side-by-side** with ASCII art. Features ANSI color support, Unicode blocks for 2x resolution, Floyd-Steinberg dithering, and inline image display. Perfect for viewing images in terminals with both original and ASCII representations simultaneously.
+
+## 🖼️ Visual Examples
+
+**Original Image** → **TIV ASCII Art Output**
+
+<table>
+<tr>
+<td width="50%">
+<h4>Input: example/fun.jpg</h4>
+<img src="example/fun.jpg" alt="Original colorful image" width="100%">
+</td>
+<td width="50%">
+<h4>Output: ASCII Art</h4>
+<img src="example/ascii.png" alt="Generated ASCII art" width="100%">
+</td>
+</tr>
+</table>
+
+**Command used:**
+```bash
+tiv -w 80 -c 1.2 example/fun.jpg
+```
+
+*See how TIV transforms any image into beautiful ASCII art while preserving details and contrast!*
+
+### 🚀 Try It Now
+
+**Clone and test immediately:**
+```bash
+git clone https://github.com/e6a5/tiv.git
+cd tiv
+make build
+./build/tiv example/fun.jpg
+```
+
+**Or download the [latest release](https://github.com/e6a5/tiv/releases/latest) and run:**
+```bash
+tiv example/fun.jpg
+```
 
 ## 🐧 Philosophy
 
@@ -110,8 +150,14 @@ tiv image.jpg | head -20 | tail -10
 
 ## Supported Formats
 
-- PNG
-- JPEG
+- **PNG** (.png)
+- **JPEG** (.jpg, .jpeg)
+- **GIF** (.gif) 
+- **WebP** (.webp)
+- **TIFF** (.tiff, .tif)
+- **BMP** (.bmp)
+
+*Extended format support added in v1.0.0 for maximum compatibility.*
 
 ## 🖼️ Terminal Image Preview
 
@@ -159,23 +205,30 @@ Based on the [Yazi terminal compatibility research](https://yazi-rs.github.io/do
 
 ## Examples
 
-Convert and save:
+### Quick Start
 ```bash
-tiv photo.jpg > ascii-art.txt
+# Try it with the included example
+tiv example/fun.jpg
+
+# ASCII only (pipeable)
+tiv -no-split example/fun.jpg
+
+# High quality with color and dithering
+tiv -b -d -color 24bit -c 1.3 example/fun.jpg
 ```
 
-Use in pipelines:
+### Advanced Usage
 ```bash
+# Convert and save
+tiv -no-split photo.jpg > ascii-art.txt
+
+# Use in pipelines
 find . -name "*.jpg" | head -1 | xargs cat | tiv -w 60
-```
 
-Quick preview:
-```bash
+# Quick preview
 tiv image.png | head -20
-```
 
-Full color with high resolution:
-```bash
+# Full color with high resolution
 tiv -b -d -color 24bit -c 1.3 photo.jpg
 ```
 
