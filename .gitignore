@@ -35,12 +35,13 @@ dist/
 ehthumbs.db
 Thumbs.db
 
-# Test images and artifacts
+# Test images and artifacts (exclude examples)
 *.png
 *.jpg
 *.jpeg
 *.gif
 *.webp
+!example/**
 ascii_art.txt
 *.txt
 
